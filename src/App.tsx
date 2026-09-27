@@ -44,6 +44,17 @@ export default function App() {
   const [targetCommodityFilter, setTargetCommodityFilter] = useState<string>('all');
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [syncStatusNotice, setSyncStatusNotice] = useState<string | null>(null);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState<boolean>(() => {
+    return localStorage.getItem('monitoring_pp1_sidebar_collapsed') === 'true';
+  });
+
+  const handleToggleSidebar = useCallback(() => {
+    setIsSidebarCollapsed(prev => {
+      const next = !prev;
+      localStorage.setItem('monitoring_pp1_sidebar_collapsed', String(next));
+      return next;
+    });
+  }, []);
 
   // 3. Modal toggles
   const [isHelpOpen, setIsHelpOpen] = useState<boolean>(false);
@@ -124,6 +135,8 @@ export default function App() {
         onOpenMigration={() => setIsMigrationOpen(true)}
         onOpenSwitchApp={() => setIsSwitchAppOpen(true)}
         onLogout={() => setIsLoginOpen(true)}
+        isSidebarCollapsed={isSidebarCollapsed}
+        onToggleSidebarCollapse={handleToggleSidebar}
       />
 
       {/* Main Workspace: Sidebar + Content */}
@@ -139,6 +152,8 @@ export default function App() {
             session={session}
             onOpenMigration={() => setIsMigrationOpen(true)}
             onOpenSwitchApp={() => setIsSwitchAppOpen(true)}
+            isCollapsed={isSidebarCollapsed}
+            onToggleCollapse={handleToggleSidebar}
           />
         </div>
 
